@@ -21,14 +21,14 @@
 body{
   margin:0;
   font-family:Inter,Segoe UI,Arial,sans-serif;
-  color:var(--text);
   background:
     radial-gradient(1200px 600px at 10% -10%,#2563eb33,transparent),
     linear-gradient(160deg,var(--bg1),var(--bg2));
+  color:var(--text);
   min-height:100vh;
 }
 .app{
-  max-width:1400px;
+  max-width:680px;
   margin:auto;
   padding:14px;
 }
@@ -40,7 +40,6 @@ body{
   border:1px solid var(--line);
   border-radius:20px;
   padding:16px;
-  margin-bottom:14px;
 }
 .title{
   font-size:18px;
@@ -53,11 +52,11 @@ body{
 .search input{
   width:100%;
   padding:16px 16px 16px 44px;
-  font-size:16px;
   border-radius:14px;
   border:1px solid var(--line);
   background:rgba(0,0,0,.3);
   color:#fff;
+  font-size:16px;
 }
 .search::before{
   content:"🔍";
@@ -68,38 +67,37 @@ body{
   opacity:.7;
 }
 
-/* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:14px;
+/* TABS */
+.tabs{
+  display:flex;
+  gap:6px;
+  margin:14px 0;
 }
-@media(max-width:900px){
-  .grid{grid-template-columns:1fr}
+.tab{
+  flex:1;
+  text-align:center;
+  padding:10px 6px;
+  border-radius:12px;
+  background:rgba(0,0,0,.25);
+  border:1px solid var(--line);
+  font-size:12px;
+  cursor:pointer;
+}
+.tab.active{
+  background:linear-gradient(135deg,#2563eb,#22c55e);
+  border-color:transparent;
+  color:#fff;
 }
 
-/* COLUMN */
-.col{
+/* LIST */
+.list{
   background:var(--glass);
   backdrop-filter:blur(16px);
   border:1px solid var(--line);
   border-radius:20px;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-}
-.col h3{
-  margin:0;
-  padding:12px 14px;
-  font-size:13px;
-  letter-spacing:.5px;
-  background:linear-gradient(90deg,transparent,#ffffff10,transparent);
-  border-bottom:1px solid var(--line);
-}
-.list{
   padding:10px;
+  max-height:70vh;
   overflow:auto;
-  max-height:65vh;
 }
 
 /* CARD */
@@ -110,20 +108,14 @@ body{
   border-radius:16px;
   padding:12px;
   margin-bottom:10px;
-  transition:.25s;
-  animation:fadeUp .25s ease;
   cursor:pointer;
+  animation:fadeUp .25s ease;
+  transition:.25s;
 }
-.card:hover{
-  transform:translateY(-2px);
-  border-color:var(--accent);
-}
+.card:hover{transform:translateY(-2px)}
 .card.match{
   border-color:var(--ok);
   animation:pulse 1.2s infinite;
-}
-.card.exact{
-  transform:scale(1.02);
 }
 .card.exact::before{
   content:"";
@@ -135,15 +127,13 @@ body{
 }
 .fade-out{
   background:#2b0f0f !important;
-  border-color:var(--danger) !important;
-  animation:fadeRed .35s ease forwards;
+  border-color:var(--danger)!important;
+  animation:fadeRed .35s forwards;
 }
 
-/* TEXT */
-.code{font-weight:600;font-size:14px}
-.name{font-size:12px;color:var(--muted);margin-top:2px}
+.code{font-weight:600}
+.name{font-size:12px;color:var(--muted)}
 
-/* BADGE */
 .badge{
   position:absolute;
   top:10px;
@@ -164,37 +154,25 @@ body{
   left:50%;
   transform:translateX(-50%);
   background:#111827;
-  color:#e5e7eb;
   padding:10px 14px;
   border-radius:10px;
   font-size:12px;
   opacity:0;
-  pointer-events:none;
   transition:.3s;
 }
 .toast.show{opacity:1}
 
-/* ANIMATIONS */
+/* ANIM */
 @keyframes pulse{
   0%{box-shadow:0 0 0 0 rgba(34,197,94,.6)}
   70%{box-shadow:0 0 0 14px transparent}
-  100%{box-shadow:0 0 0 0 transparent}
 }
 @keyframes fadeUp{
   from{opacity:0;transform:translateY(6px)}
   to{opacity:1;transform:none}
 }
 @keyframes fadeRed{
-  0%{opacity:1;transform:translateY(0)}
-  50%{box-shadow:0 0 0 6px rgba(239,68,68,.5)}
-  100%{opacity:0;transform:translateY(-10px)}
-}
-
-.footer{
-  text-align:center;
-  margin-top:14px;
-  font-size:11px;
-  color:var(--muted);
+  to{opacity:0;transform:translateY(-10px)}
 }
 .hidden{display:none}
 </style>
@@ -206,32 +184,21 @@ body{
 <div class="header">
   <div class="title">Stok Kodu Yapay Zeka Asistanı</div>
   <div class="search">
-    <input id="search" placeholder="Stok kodu veya stok ismi yazınız (örn: 0708 / PUL)">
+    <input id="search" placeholder="Stok kodu veya adı yaz (0708 / PUL)">
   </div>
 </div>
 
-<div class="grid">
-  <div class="col">
-    <h3>HAMMADDE</h3>
-    <div class="list" id="HAMMADDE"></div>
-  </div>
-  <div class="col">
-    <h3>AMBALAJ / YRDMALZM</h3>
-    <div class="list" id="AMBALAJ"></div>
-  </div>
-  <div class="col">
-    <h3>MAMÜL</h3>
-    <div class="list" id="MAMUL"></div>
-  </div>
+<div class="tabs">
+  <div class="tab active" data-tab="ALL">TÜMÜ</div>
+  <div class="tab" data-tab="HAMMADDE">HAMMADDE</div>
+  <div class="tab" data-tab="AMBALAJ">AMBALAJ</div>
+  <div class="tab" data-tab="MAMUL">MAMÜL</div>
 </div>
 
-<div class="footer">
-  Copyright © Bilal Tektaş
-</div>
+<div class="list" id="list"></div>
 
 <div id="toast" class="toast">Kopyalandı</div>
 
-<!-- HAM STOK VERİSİ (KULLANICIYA GÖRÜNMEZ) -->
 <textarea id="rawData" class="hidden">
 HAMMADDE	001040102	YAŞ BİBER KAPYA
 MAMUL	00201306090	ACI BİBER 100 LUK TÜM  100 G ORTA PET (K332)
@@ -2767,7 +2734,6 @@ AMBALAJ	157600300139	112CC  CAM ŞİŞE
 YRDMALZM	157600600421	AHŞAP PALET 80 X 120 YARDIMCI MALZEME
 YRDMALZM	157600600646	100 X 120 ISIL İŞLEMLİ PALET
 YRDMALZM	157600600647	80 X 120 ISIL İŞLEMLİ PALET
-
 </textarea>
 
 </div>
@@ -2781,24 +2747,26 @@ const STOCKS=raw.split("\n").map(l=>{
 const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 
 const input=document.getElementById("search");
-const cols={
-  HAMMADDE:document.getElementById("HAMMADDE"),
-  AMBALAJ:document.getElementById("AMBALAJ"),
-  MAMUL:document.getElementById("MAMUL")
-};
-
+const list=document.getElementById("list");
+const tabs=document.querySelectorAll(".tab");
 const toast=document.getElementById("toast");
-function showToast(t){
-  toast.textContent=t;
+let activeTab="ALL";
+
+tabs.forEach(t=>{
+  t.onclick=()=>{
+    tabs.forEach(x=>x.classList.remove("active"));
+    t.classList.add("active");
+    activeTab=t.dataset.tab;
+    render();
+  };
+});
+
+function showToast(){
   toast.classList.add("show");
   setTimeout(()=>toast.classList.remove("show"),1200);
 }
-function copyText(t){
-  navigator.clipboard.writeText(t);
-  showToast("Kopyalandı");
-}
 
-function matchScore(s,q){
+function score(s,q){
   if(!q) return 0;
   q=norm(q);
   const c=norm(s.code), n=norm(s.name);
@@ -2810,21 +2778,15 @@ function matchScore(s,q){
   return 0;
 }
 
-let prevKeys=new Set();
-
-function clear(){
-  Object.values(cols).forEach(c=>c.innerHTML="");
-}
-
 function render(){
   const q=input.value.trim();
-  const nowKeys=new Set();
-  clear();
+  list.innerHTML="";
   if(!q) return;
 
   STOCKS
-    .map(s=>({...s,score:matchScore(s,q)}))
+    .map(s=>({...s,score:score(s,q)}))
     .filter(s=>s.score>0)
+    .filter(s=>activeTab==="ALL"||s.grup===activeTab||(activeTab==="AMBALAJ"&&s.grup==="YRDMALZM"))
     .sort((a,b)=>b.score-a.score)
     .forEach(s=>{
       const exact=s.score>=95;
@@ -2833,27 +2795,18 @@ function render(){
         (s.grup==="AMBALAJ"||s.grup==="YRDMALZM")?"ambalaj":"mamul";
 
       const card=document.createElement("div");
-      card.className="card "+(exact?"match exact":"partial");
+      card.className="card "+(exact?"match exact":"");
       card.innerHTML=`
         <span class="badge ${badgeClass}">${s.grup}</span>
         <div class="code">${s.code}</div>
         <div class="name">${s.name}</div>
       `;
-      card.onclick=()=>copyText(s.code);
-      card.oncontextmenu=e=>{
-        e.preventDefault();
-        copyText(s.code+" - "+s.name);
+      card.onclick=()=>{
+        navigator.clipboard.writeText(s.code);
+        showToast();
       };
-
-      const key=s.grup+"-"+s.code;
-      nowKeys.add(key);
-
-      if(s.grup==="HAMMADDE") cols.HAMMADDE.appendChild(card);
-      else if(s.grup==="AMBALAJ"||s.grup==="YRDMALZM") cols.AMBALAJ.appendChild(card);
-      else cols.MAMUL.appendChild(card);
+      list.appendChild(card);
     });
-
-  prevKeys=nowKeys;
 }
 
 input.addEventListener("input",render);
