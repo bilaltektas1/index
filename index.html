@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stok Kodları Robotu</title>
+<title>Stok Kodu Yapay Zeka Asistanı</title>
 
 <style>
 :root{
@@ -15,11 +15,12 @@
   --muted:#9ca3af;
   --accent:#60a5fa;
   --ok:#22c55e;
+  --danger:#ef4444;
 }
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:Segoe UI,Inter,Arial,sans-serif;
+  font-family:Inter,Segoe UI,Arial,sans-serif;
   color:var(--text);
   background:
     radial-gradient(1200px 600px at 10% -10%,#2563eb33,transparent),
@@ -35,16 +36,16 @@ body{
 /* HEADER */
 .header{
   background:var(--glass);
-  backdrop-filter:blur(14px);
+  backdrop-filter:blur(16px);
   border:1px solid var(--line);
-  border-radius:18px;
-  padding:14px;
+  border-radius:20px;
+  padding:16px;
   margin-bottom:14px;
 }
 .title{
   font-size:18px;
   font-weight:600;
-  margin-bottom:8px;
+  margin-bottom:10px;
 }
 .search{
   position:relative;
@@ -55,7 +56,7 @@ body{
   font-size:16px;
   border-radius:14px;
   border:1px solid var(--line);
-  background:rgba(0,0,0,.25);
+  background:rgba(0,0,0,.3);
   color:#fff;
 }
 .search::before{
@@ -80,9 +81,9 @@ body{
 /* COLUMN */
 .col{
   background:var(--glass);
-  backdrop-filter:blur(14px);
+  backdrop-filter:blur(16px);
   border:1px solid var(--line);
-  border-radius:18px;
+  border-radius:20px;
   display:flex;
   flex-direction:column;
   overflow:hidden;
@@ -90,7 +91,7 @@ body{
 .col h3{
   margin:0;
   padding:12px 14px;
-  font-size:14px;
+  font-size:13px;
   letter-spacing:.5px;
   background:linear-gradient(90deg,transparent,#ffffff10,transparent);
   border-bottom:1px solid var(--line);
@@ -98,38 +99,80 @@ body{
 .list{
   padding:10px;
   overflow:auto;
-  max-height:60vh;
+  max-height:65vh;
 }
 
 /* CARD */
 .card{
-  background:rgba(0,0,0,.25);
+  position:relative;
+  background:rgba(0,0,0,.28);
   border:1px solid var(--line);
-  border-radius:14px;
+  border-radius:16px;
   padding:12px;
   margin-bottom:10px;
   transition:.25s;
   animation:fadeUp .25s ease;
+  cursor:pointer;
 }
 .card:hover{
   transform:translateY(-2px);
   border-color:var(--accent);
 }
-.card.partial{}
 .card.match{
   border-color:var(--ok);
-  box-shadow:0 0 0 0 rgba(34,197,94,.6);
   animation:pulse 1.2s infinite;
 }
-.code{
+.card.exact{
+  transform:scale(1.02);
+}
+.card.exact::before{
+  content:"";
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:4px;
+  background:var(--ok);
+  border-radius:4px 0 0 4px;
+}
+.fade-out{
+  background:#2b0f0f !important;
+  border-color:var(--danger) !important;
+  animation:fadeRed .35s ease forwards;
+}
+
+/* TEXT */
+.code{font-weight:600;font-size:14px}
+.name{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* BADGE */
+.badge{
+  position:absolute;
+  top:10px;
+  right:10px;
+  font-size:10px;
+  padding:4px 8px;
+  border-radius:999px;
   font-weight:600;
-  font-size:14px;
 }
-.name{
+.badge.hammadde{background:#2563eb33;color:#93c5fd}
+.badge.ambalaj{background:#f59e0b33;color:#fde68a}
+.badge.mamul{background:#7c3aed33;color:#ddd6fe}
+
+/* TOAST */
+.toast{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#111827;
+  color:#e5e7eb;
+  padding:10px 14px;
+  border-radius:10px;
   font-size:12px;
-  color:var(--muted);
-  margin-top:2px;
+  opacity:0;
+  pointer-events:none;
+  transition:.3s;
 }
+.toast.show{opacity:1}
 
 /* ANIMATIONS */
 @keyframes pulse{
@@ -141,14 +184,19 @@ body{
   from{opacity:0;transform:translateY(6px)}
   to{opacity:1;transform:none}
 }
+@keyframes fadeRed{
+  0%{opacity:1;transform:translateY(0)}
+  50%{box-shadow:0 0 0 6px rgba(239,68,68,.5)}
+  100%{opacity:0;transform:translateY(-10px)}
+}
 
-.hidden{display:none}
 .footer{
   text-align:center;
-  margin-top:12px;
+  margin-top:14px;
   font-size:11px;
   color:var(--muted);
 }
+.hidden{display:none}
 </style>
 </head>
 
@@ -156,9 +204,9 @@ body{
 <div class="app">
 
 <div class="header">
-  <div class="title">Stok Kodları Robotu</div>
+  <div class="title">Stok Kodu Yapay Zeka Asistanı</div>
   <div class="search">
-    <input id="search" placeholder="Stok kodu veya stok adı yazınız (örn: 0708 / PUL)">
+    <input id="search" placeholder="Stok kodu veya stok ismi yazınız (örn: 0708 / PUL)">
   </div>
 </div>
 
@@ -178,9 +226,12 @@ body{
 </div>
 
 <div class="footer">
-  AI-Driven Stock Interface · Designed by Bilal Tektaş
+  Copyright © Bilal Tektaş
 </div>
 
+<div id="toast" class="toast">Kopyalandı</div>
+
+<!-- HAM STOK VERİSİ (KULLANICIYA GÖRÜNMEZ) -->
 <textarea id="rawData" class="hidden">
 HAMMADDE	001040102	YAŞ BİBER KAPYA
 MAMUL	00201306090	ACI BİBER 100 LUK TÜM  100 G ORTA PET (K332)
@@ -2716,6 +2767,7 @@ AMBALAJ	157600300139	112CC  CAM ŞİŞE
 YRDMALZM	157600600421	AHŞAP PALET 80 X 120 YARDIMCI MALZEME
 YRDMALZM	157600600646	100 X 120 ISIL İŞLEMLİ PALET
 YRDMALZM	157600600647	80 X 120 ISIL İŞLEMLİ PALET
+
 </textarea>
 
 </div>
@@ -2735,29 +2787,75 @@ const cols={
   MAMUL:document.getElementById("MAMUL")
 };
 
+const toast=document.getElementById("toast");
+function showToast(t){
+  toast.textContent=t;
+  toast.classList.add("show");
+  setTimeout(()=>toast.classList.remove("show"),1200);
+}
+function copyText(t){
+  navigator.clipboard.writeText(t);
+  showToast("Kopyalandı");
+}
+
+function matchScore(s,q){
+  if(!q) return 0;
+  q=norm(q);
+  const c=norm(s.code), n=norm(s.name);
+  if(c===q) return 100;
+  if(n===q) return 95;
+  if(c.startsWith(q)) return 80;
+  if(n.startsWith(q)) return 70;
+  if(c.includes(q)||n.includes(q)) return 40;
+  return 0;
+}
+
+let prevKeys=new Set();
+
 function clear(){
   Object.values(cols).forEach(c=>c.innerHTML="");
 }
 
 function render(){
-  const q=norm(input.value);
+  const q=input.value.trim();
+  const nowKeys=new Set();
   clear();
   if(!q) return;
 
-  STOCKS.forEach(s=>{
-    const hay=norm(s.code+" "+s.name);
-    if(!hay.includes(q)) return;
+  STOCKS
+    .map(s=>({...s,score:matchScore(s,q)}))
+    .filter(s=>s.score>0)
+    .sort((a,b)=>b.score-a.score)
+    .forEach(s=>{
+      const exact=s.score>=95;
+      const badgeClass=
+        s.grup==="HAMMADDE"?"hammadde":
+        (s.grup==="AMBALAJ"||s.grup==="YRDMALZM")?"ambalaj":"mamul";
 
-    const exact = norm(s.code)===q || norm(s.name)===q;
-    const card=document.createElement("div");
-    card.className="card "+(exact?"match":"partial");
-    card.innerHTML=`<div class="code">${s.code}</div><div class="name">${s.name}</div>`;
+      const card=document.createElement("div");
+      card.className="card "+(exact?"match exact":"partial");
+      card.innerHTML=`
+        <span class="badge ${badgeClass}">${s.grup}</span>
+        <div class="code">${s.code}</div>
+        <div class="name">${s.name}</div>
+      `;
+      card.onclick=()=>copyText(s.code);
+      card.oncontextmenu=e=>{
+        e.preventDefault();
+        copyText(s.code+" - "+s.name);
+      };
 
-    if(s.grup==="HAMMADDE") cols.HAMMADDE.appendChild(card);
-    else if(s.grup==="AMBALAJ"||s.grup==="YRDMALZM") cols.AMBALAJ.appendChild(card);
-    else cols.MAMUL.appendChild(card);
-  });
+      const key=s.grup+"-"+s.code;
+      nowKeys.add(key);
+
+      if(s.grup==="HAMMADDE") cols.HAMMADDE.appendChild(card);
+      else if(s.grup==="AMBALAJ"||s.grup==="YRDMALZM") cols.AMBALAJ.appendChild(card);
+      else cols.MAMUL.appendChild(card);
+    });
+
+  prevKeys=nowKeys;
 }
+
 input.addEventListener("input",render);
 </script>
 </body>
