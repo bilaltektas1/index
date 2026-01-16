@@ -9,7 +9,7 @@
 :root{
   --bg:#050914;
   --panel:rgba(255,255,255,.06);
-  --line:rgba(255,255,255,.12);
+  --line:rgba(255,255,255,.14);
   --text:#e5e7eb;
   --muted:#9ca3af;
   --blue:#38bdf8;
@@ -20,26 +20,22 @@ body{
   margin:0;
   font-family:Inter,Segoe UI,Arial,sans-serif;
   background:
-    radial-gradient(1px 1px at 20% 30%,#fff6,transparent),
-    radial-gradient(1px 1px at 70% 60%,#fff5,transparent),
+    radial-gradient(1px 1px at 20% 30%,#fff5,transparent),
+    radial-gradient(1px 1px at 70% 60%,#fff4,transparent),
     linear-gradient(160deg,#020617,#0b1020);
   color:var(--text);
 }
 .app{max-width:680px;margin:auto;padding:14px}
 
-/* === ADVANCED BANNER === */
+/* === BANNER (GÖRSELE UYUMLU) === */
 .banner{
   position:relative;
   border-radius:22px;
-  padding:26px 18px;
+  padding:22px 18px;
   background:
-    linear-gradient(120deg,#020617,#020617),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 18px,
-      rgba(56,189,248,.15) 20px
-    );
+    radial-gradient(circle at 30% 30%,#38bdf822,transparent 45%),
+    radial-gradient(circle at 80% 70%,#22d3ee22,transparent 45%),
+    linear-gradient(180deg,#020617,#020617);
   border:1px solid var(--line);
   overflow:hidden;
 }
@@ -47,14 +43,34 @@ body{
   content:"";
   position:absolute;
   inset:0;
-  background:
-    radial-gradient(circle at 20% 30%,#22d3ee44,transparent 40%),
-    radial-gradient(circle at 80% 70%,#22c55e33,transparent 40%);
-  animation:float 12s linear infinite;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%,#ffffff55,transparent),
+    radial-gradient(1px 1px at 40% 60%,#ffffff44,transparent),
+    radial-gradient(1px 1px at 70% 30%,#ffffff33,transparent),
+    radial-gradient(1px 1px at 90% 80%,#ffffff55,transparent);
+  animation:stars 18s linear infinite;
 }
-@keyframes float{
+@keyframes stars{
   from{transform:translateY(0)}
-  to{transform:translateY(-40px)}
+  to{transform:translateY(-120px)}
+}
+.banner-content{
+  position:relative;
+  display:flex;
+  gap:14px;
+  align-items:center;
+}
+.ai-icon{
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 30% 30%,#7dd3fc,#2563eb);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  box-shadow:0 0 30px #38bdf8aa;
 }
 .banner h1{
   margin:0;
@@ -64,17 +80,14 @@ body{
   -webkit-background-clip:text;
   color:transparent;
 }
-.banner p{
-  margin:6px 0 0;
+.banner span{
+  display:block;
   font-size:12px;
   color:var(--muted);
 }
 
 /* SEARCH */
-.search{
-  margin-top:14px;
-  position:relative;
-}
+.search{margin-top:14px;position:relative}
 .search input{
   width:100%;
   padding:16px 16px 16px 46px;
@@ -83,7 +96,6 @@ body{
   border:1px solid var(--line);
   color:#fff;
   font-size:16px;
-  box-shadow:0 0 24px #38bdf833;
 }
 .search::before{
   content:"🔍";
@@ -94,16 +106,12 @@ body{
 }
 
 /* TABS */
-.tabs{
-  display:flex;
-  gap:6px;
-  margin:14px 0;
-}
+.tabs{display:flex;margin:14px 0}
 .tab{
   flex:1;
   text-align:center;
   font-size:12px;
-  padding:10px 6px;
+  padding:10px;
   color:var(--muted);
   cursor:pointer;
 }
@@ -138,22 +146,10 @@ body{
   border-color:var(--green);
   box-shadow:0 0 40px #22c55e99;
 }
-.code{
-  font-size:18px;
-  font-weight:700;
-}
-.card.exact .code{
-  font-size:32px;
-  color:var(--green);
-}
-.name{
-  font-size:13px;
-  color:var(--muted);
-}
-.card.exact .name{
-  font-size:18px;
-  color:#dcfce7;
-}
+.code{font-size:18px;font-weight:700}
+.card.exact .code{font-size:32px;color:var(--green)}
+.name{font-size:13px;color:var(--muted)}
+.card.exact .name{font-size:18px;color:#dcfce7}
 .badge{
   position:absolute;
   top:12px;
@@ -180,8 +176,13 @@ body{
 <div class="app">
 
 <div class="banner">
-  <h1>Stok Kodu Yapay Zeka Asistanı</h1>
-  <p>Akıllı arama · Akıllı eşleştirme · ERP uyumlu</p>
+  <div class="banner-content">
+    <div class="ai-icon">🧠</div>
+    <div>
+      <h1>Stok Kodu Yapay Zeka Asistanı</h1>
+      <span>Akıllı stok eşleştirme sistemi</span>
+    </div>
+  </div>
 </div>
 
 <div class="search">
@@ -3104,14 +3105,11 @@ YRDMALZM	15763861496	YARDIMCI MALZEME ÜRETİM  KAPAK 63 MM
 
 <script>
 const PRIORITY={AMBALAJ:1,YRDMALZM:2,HAMMADDE:3,MAMUL:4};
-
 const raw=document.getElementById("rawData").value.trim();
 let stocks=raw.split("\n").map(l=>{
   const p=l.split("\t");
   return{grup:p[0],code:p[1],name:p.slice(2).join(" ")};
 });
-
-/* DEDUP */
 const map={};
 stocks.forEach(s=>{
   if(!map[s.code]||PRIORITY[s.grup]<PRIORITY[map[s.code].grup]){
@@ -3121,7 +3119,6 @@ stocks.forEach(s=>{
 stocks=Object.values(map);
 
 const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ı/g,"i");
-
 const input=document.getElementById("search");
 const list=document.getElementById("list");
 const tabs=document.querySelectorAll(".tab");
@@ -3148,7 +3145,7 @@ function score(s,q){
 function vibrate(code){
   if(code===lastVib) return;
   lastVib=code;
-  navigator.vibrate?.([200,80,200,80,300]);
+  navigator.vibrate?.([300,100,300,100,400]);
 }
 
 function render(){
@@ -3177,7 +3174,6 @@ function render(){
       if(i===0&&exact) vibrate(s.code);
     });
 }
-
 input.addEventListener("input",render);
 </script>
 </body>
