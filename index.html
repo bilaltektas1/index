@@ -7,28 +7,34 @@
 
 <style>
 :root{
-  --bg1:#0b1020;
+  --bg:#0b1020;
   --bg2:#111936;
-  --glass:rgba(255,255,255,.08);
+  --card:rgba(255,255,255,.08);
   --line:rgba(255,255,255,.15);
   --text:#e5e7eb;
   --muted:#9ca3af;
   --ok:#22c55e;
 }
+.light{
+  --bg:#f3f4f6;
+  --bg2:#e5e7eb;
+  --card:#ffffff;
+  --line:#d1d5db;
+  --text:#111827;
+  --muted:#6b7280;
+}
 *{box-sizing:border-box}
 body{
   margin:0;
   font-family:Inter,Segoe UI,Arial,sans-serif;
-  background:
-    radial-gradient(1200px 600px at 10% -10%,#2563eb33,transparent),
-    linear-gradient(160deg,var(--bg1),var(--bg2));
+  background:linear-gradient(160deg,var(--bg),var(--bg2));
   color:var(--text);
 }
-.app{max-width:720px;margin:auto;padding:14px}
+.app{max-width:720px;margin:auto;padding:14px;padding-bottom:140px}
 
 /* HEADER */
 .header{
-  background:var(--glass);
+  background:var(--card);
   border:1px solid var(--line);
   border-radius:20px;
   padding:16px;
@@ -40,48 +46,20 @@ body{
   margin-bottom:10px;
 }
 .title{font-size:18px;font-weight:600}
-.sound-toggle{
-  cursor:pointer;
-  font-size:13px;
-  opacity:.8;
-}
-.search{position:relative}
 .search input{
   width:100%;
   padding:16px 16px 16px 44px;
   border-radius:14px;
   border:1px solid var(--line);
-  background:rgba(0,0,0,.3);
-  color:#fff;
+  background:transparent;
+  color:var(--text);
   font-size:16px;
-}
-.search::before{
-  content:"🔍";
-  position:absolute;
-  left:14px;
-  top:50%;
-  transform:translateY(-50%);
-}
-
-/* TABS */
-.tabs{display:flex;gap:6px;margin:14px 0}
-.tab{
-  flex:1;text-align:center;
-  padding:10px 6px;
-  border-radius:12px;
-  background:rgba(0,0,0,.25);
-  border:1px solid var(--line);
-  font-size:12px;
-  cursor:pointer;
-}
-.tab.active{
-  background:linear-gradient(135deg,#2563eb,#22c55e);
-  border-color:transparent;
 }
 
 /* LIST */
 .list{
-  background:var(--glass);
+  margin-top:14px;
+  background:var(--card);
   border:1px solid var(--line);
   border-radius:20px;
   padding:10px;
@@ -89,66 +67,39 @@ body{
   overflow:auto;
 }
 .card{
-  position:relative;
-  background:rgba(0,0,0,.28);
   border:1px solid var(--line);
   border-radius:16px;
   padding:12px;
   margin-bottom:10px;
-  animation:fadeUp .25s ease;
-  transition:.25s;
 }
 .card.match{
   border-color:var(--ok);
-  animation:pulse 1.4s infinite;
+  box-shadow:0 0 0 2px rgba(34,197,94,.25);
 }
 .code{font-weight:600}
 .name{font-size:12px;color:var(--muted)}
-.score{
-  position:absolute;
-  bottom:10px;
-  right:12px;
-  font-size:10px;
-  color:#9ca3af;
-}
-.badge{
-  position:absolute;
-  top:10px;
-  right:10px;
-  font-size:10px;
-  padding:4px 8px;
-  border-radius:999px;
-}
-.hammadde{background:#2563eb33}
-.ambalaj{background:#f59e0b33}
-.mamul{background:#7c3aed33}
 
 /* BEST MATCH */
 .best{
   position:fixed;
-  left:0;right:0;bottom:-140px;
-  background:#0f172a;
-  border-top:2px solid var(--ok);
+  left:0;
+  right:0;
+  bottom:0;
+  background:var(--card);
+  border-top:3px solid var(--ok);
   box-shadow:0 -10px 40px rgba(34,197,94,.35);
-  padding:14px;
-  transition:.35s;
+  padding:18px;
+  display:none;
 }
-.best.show{bottom:0}
-.best-inner{
-  max-width:720px;
-  margin:auto;
-}
-.best strong{color:var(--ok)}
-.best small{color:#9ca3af}
+.best.show{display:block}
+.best strong{color:var(--ok);font-size:18px}
 
-/* ANIM */
-@keyframes pulse{
-  0%{box-shadow:0 0 0 0 rgba(34,197,94,.6)}
-  70%{box-shadow:0 0 0 18px transparent}
-}
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(8px)}
-  to{opacity:1;transform:none}
+/* FOOTER */
+footer{
+  text-align:center;
+  font-size:11px;
+  opacity:.5;
+  margin:40px 0 0;
 }
 </style>
 </head>
@@ -159,24 +110,14 @@ body{
 <div class="header">
   <div class="header-top">
     <div class="title">Stok Kodu Yapay Zeka Asistanı</div>
-    <div class="sound-toggle" id="soundToggle">🔇 Ses Kapalı</div>
   </div>
-  <div class="search">
-    <input id="search" placeholder="Stok kodu veya adı yaz">
-  </div>
-</div>
-
-<div class="tabs">
-  <div class="tab active" data-tab="ALL">TÜMÜ</div>
-  <div class="tab" data-tab="HAMMADDE">HAMMADDE</div>
-  <div class="tab" data-tab="AMBALAJ">AMBALAJ</div>
-  <div class="tab" data-tab="MAMUL">MAMÜL</div>
+  <input id="search" placeholder="Stok kodu veya adı yaz">
 </div>
 
 <div class="list" id="list"></div>
 
 <div class="best" id="bestBar">
-  <div class="best-inner" id="bestInfo"></div>
+  <div id="bestInfo"></div>
 </div>
 
 <textarea id="rawData" hidden>
@@ -1924,110 +1865,73 @@ MAMUL	TESTMSTFSÜ	TESTMSTFSÜ
 
 </textarea>
 
+<footer>
+© Copyright Bilal Tektaş
+</footer>
+
 </div>
 
 <script>
 const raw=document.getElementById("rawData").value.trim();
 const STOCKS=raw.split("\n").map(l=>{
   const p=l.split("\t");
-  return{grup:p[0],code:p[1],name:p.slice(2).join(" ")};
+  return{code:p[1],name:p.slice(2).join(" ")};
 });
 const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 
 const input=document.getElementById("search");
 const list=document.getElementById("list");
-const tabs=document.querySelectorAll(".tab");
 const bestBar=document.getElementById("bestBar");
 const bestInfo=document.getElementById("bestInfo");
-const soundToggle=document.getElementById("soundToggle");
 
-let activeTab="ALL";
-let soundOn=false;
-let spoken=false;
-
-soundToggle.onclick=()=>{
-  soundOn=!soundOn;
-  soundToggle.textContent=soundOn?"🔊 Ses Açık":"🔇 Ses Kapalı";
-};
-
-tabs.forEach(t=>{
-  t.onclick=()=>{
-    tabs.forEach(x=>x.classList.remove("active"));
-    t.classList.add("active");
-    activeTab=t.dataset.tab;
-    render();
-  };
-});
+let lastAnnouncedCode=null;
 
 function score(s,q){
   q=norm(q);
   const c=norm(s.code), n=norm(s.name);
-  if(c===q) return 100;
-  if(n===q) return 95;
-  if(c.startsWith(q)) return 80;
-  if(n.startsWith(q)) return 70;
-  if(c.includes(q)||n.includes(q)) return 40;
+  if(c===q||n===q) return 100;
+  if(c.includes(q)||n.includes(q)) return 60;
   return 0;
 }
 
-function notify(){
-  if(soundOn){
-    const u=new SpeechSynthesisUtterance("Stok bulundu");
-    u.lang="tr-TR";
-    speechSynthesis.speak(u);
-  }
-  if(navigator.vibrate){
-    navigator.vibrate([60,40,60,40,120]);
-  }
+function announce(code){
+  if(code===lastAnnouncedCode) return;
+  lastAnnouncedCode=code;
+  const u=new SpeechSynthesisUtterance("Stok bulundu");
+  u.lang="tr-TR";
+  speechSynthesis.speak(u);
+  if(navigator.vibrate) navigator.vibrate([80,40,80,40,140]);
 }
 
 function render(){
   const q=input.value.trim();
   list.innerHTML="";
   bestBar.classList.remove("show");
-  spoken=false;
-  if(!q) return;
+  if(!q){
+    lastAnnouncedCode=null;
+    return;
+  }
 
   const matches=STOCKS
     .map(s=>({...s,score:score(s,q)}))
     .filter(s=>s.score>0)
-    .filter(s=>activeTab==="ALL"||s.grup===activeTab||(activeTab==="AMBALAJ"&&s.grup==="YRDMALZM"))
     .sort((a,b)=>b.score-a.score);
 
   matches.forEach((s,i)=>{
-    const exact=s.score>=95;
-    const badge=
-      s.grup==="HAMMADDE"?"hammadde":
-      (s.grup==="AMBALAJ"||s.grup==="YRDMALZM")?"ambalaj":"mamul";
-
     const card=document.createElement("div");
-    card.className="card "+(exact?"match":"");
-    card.innerHTML=`
-      <span class="badge ${badge}">${s.grup}</span>
-      <div class="code">${s.code}</div>
-      <div class="name">${s.name}</div>
-      <div class="score">%${s.score}</div>
-    `;
+    card.className="card "+(s.score===100?"match":"");
+    card.innerHTML=`<div class="code">${s.code}</div><div class="name">${s.name}</div>`;
     list.appendChild(card);
 
-    if(i===0 && exact && !spoken){
-      bestInfo.innerHTML=`
-        <strong>${s.code}</strong> – ${s.name}<br>
-        <small>${s.grup} • %${s.score} eşleşme</small>
-      `;
+    if(i===0 && s.score===100){
+      bestInfo.innerHTML=`<strong>${s.code}</strong><br>${s.name}`;
       bestBar.classList.add("show");
-      notify();
-      spoken=true;
+      announce(s.code);
     }
   });
 }
 
 input.addEventListener("input",render);
 </script>
-
-<footer style="text-align:center;font-size:11px;opacity:.5;margin:18px 0">
-© Copyright Bilal Tektaş
-</footer>
-
 </body>
 </html>
