@@ -7,22 +7,23 @@
 
 <style>
 :root{
-  --bg1:#0b1020;
-  --bg2:#111936;
-  --glass:rgba(255,255,255,.08);
-  --line:rgba(255,255,255,.15);
+  --bg1:#050914;
+  --bg2:#0b1020;
+  --glass:rgba(255,255,255,.06);
+  --line:rgba(255,255,255,.12);
   --text:#e5e7eb;
   --muted:#9ca3af;
-  --accent:#60a5fa;
+  --blue:#38bdf8;
   --ok:#22c55e;
-  --danger:#ef4444;
 }
 *{box-sizing:border-box}
 body{
   margin:0;
   font-family:Inter,Segoe UI,Arial,sans-serif;
   background:
-    radial-gradient(1200px 600px at 10% -10%,#2563eb33,transparent),
+    radial-gradient(1px 1px at 20% 30%,#fff6,transparent),
+    radial-gradient(1px 1px at 70% 60%,#fff5,transparent),
+    radial-gradient(1px 1px at 40% 80%,#fff6,transparent),
     linear-gradient(160deg,var(--bg1),var(--bg2));
   color:var(--text);
   min-height:100vh;
@@ -30,38 +31,43 @@ body{
 .app{
   max-width:680px;
   margin:auto;
-  padding:14px;
+  padding:16px;
 }
 
 /* HEADER */
 .header{
   background:var(--glass);
-  backdrop-filter:blur(16px);
+  backdrop-filter:blur(18px);
   border:1px solid var(--line);
-  border-radius:20px;
-  padding:16px;
+  border-radius:22px;
+  padding:18px;
 }
 .title{
-  font-size:18px;
-  font-weight:600;
-  margin-bottom:10px;
+  font-size:22px;
+  font-weight:700;
+  background:linear-gradient(90deg,#7dd3fc,#22d3ee);
+  -webkit-background-clip:text;
+  color:transparent;
+  margin-bottom:14px;
 }
 .search{
   position:relative;
 }
 .search input{
   width:100%;
-  padding:16px 16px 16px 44px;
-  border-radius:14px;
+  padding:16px 16px 16px 46px;
+  border-radius:16px;
   border:1px solid var(--line);
-  background:rgba(0,0,0,.3);
+  background:rgba(0,0,0,.5);
+  box-shadow:inset 0 0 0 1px rgba(56,189,248,.4),
+             0 0 24px rgba(56,189,248,.18);
   color:#fff;
   font-size:16px;
 }
 .search::before{
   content:"🔍";
   position:absolute;
-  left:14px;
+  left:16px;
   top:50%;
   transform:translateY(-50%);
   opacity:.7;
@@ -70,91 +76,112 @@ body{
 /* TABS */
 .tabs{
   display:flex;
-  gap:6px;
-  margin:14px 0;
+  gap:8px;
+  margin:16px 0 12px;
 }
 .tab{
   flex:1;
   text-align:center;
   padding:10px 6px;
-  border-radius:12px;
-  background:rgba(0,0,0,.25);
-  border:1px solid var(--line);
   font-size:12px;
+  color:var(--muted);
+  position:relative;
   cursor:pointer;
 }
 .tab.active{
-  background:linear-gradient(135deg,#2563eb,#22c55e);
-  border-color:transparent;
-  color:#fff;
+  color:var(--blue);
+}
+.tab.active::after{
+  content:"";
+  position:absolute;
+  left:25%;
+  right:25%;
+  bottom:-6px;
+  height:3px;
+  background:var(--blue);
+  border-radius:3px;
+  box-shadow:0 0 14px var(--blue);
 }
 
 /* LIST */
 .list{
   background:var(--glass);
-  backdrop-filter:blur(16px);
+  backdrop-filter:blur(18px);
   border:1px solid var(--line);
-  border-radius:20px;
-  padding:10px;
-  max-height:70vh;
+  border-radius:22px;
+  padding:12px;
+  max-height:68vh;
   overflow:auto;
 }
 
 /* CARD */
 .card{
   position:relative;
-  background:rgba(0,0,0,.28);
+  background:rgba(0,0,0,.38);
   border:1px solid var(--line);
-  border-radius:16px;
-  padding:12px;
-  margin-bottom:10px;
+  border-radius:18px;
+  padding:14px;
+  margin-bottom:12px;
   animation:fadeUp .25s ease;
-  transition:.25s;
 }
-.card.match{
-  border-color:var(--ok);
-  animation:pulse 1.2s infinite;
+.card.exact{
+  background:
+    radial-gradient(120% 120% at top left,rgba(34,197,94,.35),transparent),
+    rgba(0,0,0,.55);
+  border:1px solid var(--ok);
+  box-shadow:0 0 40px rgba(34,197,94,.6);
 }
-.card.exact::before{
-  content:"";
+.card.exact::after{
+  content:"BİREBİR EŞLEŞME";
   position:absolute;
-  left:0;top:0;bottom:0;
-  width:4px;
-  background:var(--ok);
-  border-radius:4px 0 0 4px;
+  bottom:12px;
+  left:14px;
+  font-size:11px;
+  letter-spacing:.12em;
+  color:var(--ok);
 }
-.code{font-weight:600}
-.name{font-size:12px;color:var(--muted)}
+.code{
+  font-size:20px;
+  font-weight:700;
+}
+.card.exact .code{
+  font-size:34px;
+  color:var(--ok);
+}
+.name{
+  font-size:13px;
+  color:var(--muted);
+}
+.card.exact .name{
+  font-size:18px;
+  color:#dcfce7;
+}
 
+/* BADGE */
 .badge{
   position:absolute;
-  top:10px;
-  right:10px;
-  font-size:10px;
-  padding:4px 8px;
+  top:12px;
+  right:12px;
+  font-size:11px;
+  padding:6px 10px;
   border-radius:999px;
+  background:#2563eb33;
+  color:#93c5fd;
   font-weight:600;
-}
-.badge.hammadde{background:#2563eb33;color:#93c5fd}
-.badge.ambalaj{background:#f59e0b33;color:#fde68a}
-.badge.mamul{background:#7c3aed33;color:#ddd6fe}
-
-/* ANIM */
-@keyframes pulse{
-  0%{box-shadow:0 0 0 0 rgba(34,197,94,.6)}
-  70%{box-shadow:0 0 0 14px transparent}
-}
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(6px)}
-  to{opacity:1;transform:none}
 }
 
 /* FOOTER */
 .footer{
   text-align:center;
   font-size:11px;
-  color:var(--muted);
-  margin-top:12px;
+  color:#6b7280;
+  margin-top:14px;
+}
+
+/* ANIM */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:none}
 }
 .hidden{display:none}
 </style>
@@ -166,13 +193,12 @@ body{
 <div class="header">
   <div class="title">Stok Kodu Yapay Zeka Asistanı</div>
   <div class="search">
-    <input id="search" placeholder="Stok kodu veya adı yaz (0708 / PUL)">
+    <input id="search" placeholder="Stok kodu veya stok ismi yazınız...">
   </div>
 </div>
 
 <div class="tabs">
-  <div class="tab active" data-tab="ALL">TÜMÜ</div>
-  <div class="tab" data-tab="HAMMADDE">HAMMADDE</div>
+  <div class="tab active" data-tab="ALL">HAMMADDE</div>
   <div class="tab" data-tab="AMBALAJ">AMBALAJ</div>
   <div class="tab" data-tab="MAMUL">MAMÜL</div>
 </div>
@@ -180,7 +206,7 @@ body{
 <div class="list" id="list"></div>
 
 <div class="footer">
-  © Copyright Bilal Tektaş — Stok Kodu Yapay Zeka Asistanı
+  © Copyright Bilal Tektaş
 </div>
 
 <textarea id="rawData" class="hidden">
@@ -2729,7 +2755,6 @@ const STOCKS=raw.split("\n").map(l=>{
   const p=l.split("\t");
   return{grup:p[0],code:p[1],name:p.slice(2).join(" ")};
 });
-
 const norm=s=>s.toLowerCase()
   .normalize("NFD")
   .replace(/[\u0300-\u036f]/g,"")
@@ -2740,7 +2765,7 @@ const list=document.getElementById("list");
 const tabs=document.querySelectorAll(".tab");
 
 let activeTab="ALL";
-let lastSpoken=null;
+let lastVibration=null;
 
 tabs.forEach(t=>{
   t.onclick=()=>{
@@ -2758,24 +2783,22 @@ function score(s,q){
   if(n===q) return 95;
   if(c.startsWith(q)) return 85;
   if(n.startsWith(q)) return 75;
-  if(c.includes(q)) return 55;
-  if(n.includes(q)) return 45;
+  if(c.includes(q)||n.includes(q)) return 50;
   return 0;
 }
 
-function speakOnce(code){
-  if(code===lastSpoken) return;
-  lastSpoken=code;
-  const u=new SpeechSynthesisUtterance("Stok bulundu");
-  u.lang="tr-TR";
-  speechSynthesis.speak(u);
-  navigator.vibrate?.([120,60,120]);
+function vibrateOnce(code){
+  if(code===lastVibration) return;
+  lastVibration=code;
+  if(navigator.vibrate){
+    navigator.vibrate([200,80,200,80,300]);
+  }
 }
 
 function render(){
   const q=input.value.trim();
   list.innerHTML="";
-  if(!q){lastSpoken=null;return;}
+  if(!q){lastVibration=null;return;}
 
   const res=STOCKS
     .map(s=>({...s,score:score(s,q)}))
@@ -2783,31 +2806,20 @@ function render(){
     .filter(s=>activeTab==="ALL"||s.grup===activeTab)
     .sort((a,b)=>b.score-a.score);
 
-  if(!res.length){
-    const c=document.createElement("div");
-    c.className="card";
-    c.style.borderColor="var(--danger)";
-    c.innerHTML=`<div class="name">Eşleşen stok bulunamadı</div>`;
-    list.appendChild(c);
-    return;
-  }
-
   res.forEach((s,i)=>{
     const exact=s.score>=95;
-    const badge=
-      s.grup==="HAMMADDE"?"hammadde":
-      s.grup==="AMBALAJ"?"ambalaj":"mamul";
-
     const card=document.createElement("div");
-    card.className="card "+(exact?"match exact":"");
+    card.className="card "+(exact?"exact":"");
     card.innerHTML=`
-      <span class="badge ${badge}">${s.grup}</span>
+      <span class="badge">${s.grup}</span>
       <div class="code">${s.code}</div>
       <div class="name">${s.name}</div>
     `;
     list.appendChild(card);
 
-    if(i===0 && exact) speakOnce(s.code);
+    if(i===0 && exact){
+      vibrateOnce(s.code);
+    }
   });
 }
 
