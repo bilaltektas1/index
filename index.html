@@ -31,7 +31,41 @@ body{
 .app{
   max-width:680px;
   margin:auto;
-  padding:16px;
+  padding:14px;
+}
+
+/* === BANNER === */
+.banner{
+  position:relative;
+  background:
+    radial-gradient(circle at left,#22d3ee55,transparent 60%),
+    radial-gradient(circle at right,#22c55e33,transparent 60%),
+    rgba(0,0,0,.55);
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:22px 18px;
+  margin-bottom:14px;
+  overflow:hidden;
+}
+.banner::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:2px;
+  background:linear-gradient(90deg,transparent,#38bdf8,#22c55e,transparent);
+  box-shadow:0 0 18px #22d3ee;
+}
+.banner-title{
+  font-size:22px;
+  font-weight:700;
+  background:linear-gradient(90deg,#7dd3fc,#22d3ee);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+.banner-sub{
+  font-size:12px;
+  color:#9ca3af;
+  margin-top:4px;
 }
 
 /* HEADER */
@@ -40,15 +74,7 @@ body{
   backdrop-filter:blur(18px);
   border:1px solid var(--line);
   border-radius:22px;
-  padding:18px;
-}
-.title{
-  font-size:22px;
-  font-weight:700;
-  background:linear-gradient(90deg,#7dd3fc,#22d3ee);
-  -webkit-background-clip:text;
-  color:transparent;
-  margin-bottom:14px;
+  padding:16px;
 }
 .search{
   position:relative;
@@ -77,7 +103,7 @@ body{
 .tabs{
   display:flex;
   gap:8px;
-  margin:16px 0 12px;
+  margin:14px 0 10px;
 }
 .tab{
   flex:1;
@@ -85,8 +111,8 @@ body{
   padding:10px 6px;
   font-size:12px;
   color:var(--muted);
-  position:relative;
   cursor:pointer;
+  position:relative;
 }
 .tab.active{
   color:var(--blue);
@@ -131,21 +157,12 @@ body{
   border:1px solid var(--ok);
   box-shadow:0 0 40px rgba(34,197,94,.6);
 }
-.card.exact::after{
-  content:"BİREBİR EŞLEŞME";
-  position:absolute;
-  bottom:12px;
-  left:14px;
-  font-size:11px;
-  letter-spacing:.12em;
-  color:var(--ok);
-}
 .code{
-  font-size:20px;
+  font-size:18px;
   font-weight:700;
 }
 .card.exact .code{
-  font-size:34px;
+  font-size:32px;
   color:var(--ok);
 }
 .name{
@@ -190,15 +207,19 @@ body{
 <body>
 <div class="app">
 
+<div class="banner">
+  <div class="banner-title">Stok Kodu Yapay Zeka Asistanı</div>
+  <div class="banner-sub">Akıllı Stok Arama ve Eşleştirme</div>
+</div>
+
 <div class="header">
-  <div class="title">Stok Kodu Yapay Zeka Asistanı</div>
   <div class="search">
     <input id="search" placeholder="Stok kodu veya stok ismi yazınız...">
   </div>
 </div>
 
 <div class="tabs">
-  <div class="tab active" data-tab="ALL">HAMMADDE</div>
+  <div class="tab active" data-tab="HAMMADDE">HAMMADDE</div>
   <div class="tab" data-tab="AMBALAJ">AMBALAJ</div>
   <div class="tab" data-tab="MAMUL">MAMÜL</div>
 </div>
@@ -2755,6 +2776,7 @@ const STOCKS=raw.split("\n").map(l=>{
   const p=l.split("\t");
   return{grup:p[0],code:p[1],name:p.slice(2).join(" ")};
 });
+
 const norm=s=>s.toLowerCase()
   .normalize("NFD")
   .replace(/[\u0300-\u036f]/g,"")
@@ -2764,7 +2786,7 @@ const input=document.getElementById("search");
 const list=document.getElementById("list");
 const tabs=document.querySelectorAll(".tab");
 
-let activeTab="ALL";
+let activeTab="HAMMADDE";
 let lastVibration=null;
 
 tabs.forEach(t=>{
@@ -2790,9 +2812,7 @@ function score(s,q){
 function vibrateOnce(code){
   if(code===lastVibration) return;
   lastVibration=code;
-  if(navigator.vibrate){
-    navigator.vibrate([200,80,200,80,300]);
-  }
+  navigator.vibrate?.([200,80,200,80,300]);
 }
 
 function render(){
@@ -2803,7 +2823,11 @@ function render(){
   const res=STOCKS
     .map(s=>({...s,score:score(s,q)}))
     .filter(s=>s.score>0)
-    .filter(s=>activeTab==="ALL"||s.grup===activeTab)
+    .filter(s=>{
+      if(activeTab==="HAMMADDE") return s.grup==="HAMMADDE";
+      if(activeTab==="MAMUL") return s.grup==="MAMUL";
+      if(activeTab==="AMBALAJ") return s.grup==="AMBALAJ"||s.grup==="YRDMALZM";
+    })
     .sort((a,b)=>b.score-a.score);
 
   res.forEach((s,i)=>{
@@ -2817,9 +2841,7 @@ function render(){
     `;
     list.appendChild(card);
 
-    if(i===0 && exact){
-      vibrateOnce(s.code);
-    }
+    if(i===0 && exact) vibrateOnce(s.code);
   });
 }
 
