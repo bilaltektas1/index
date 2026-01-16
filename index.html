@@ -7,14 +7,13 @@
 
 <style>
 :root{
-  --bg1:#050914;
-  --bg2:#0b1020;
-  --glass:rgba(255,255,255,.06);
+  --bg:#050914;
+  --panel:rgba(255,255,255,.06);
   --line:rgba(255,255,255,.12);
   --text:#e5e7eb;
   --muted:#9ca3af;
   --blue:#38bdf8;
-  --ok:#22c55e;
+  --green:#22c55e;
 }
 *{box-sizing:border-box}
 body{
@@ -23,72 +22,68 @@ body{
   background:
     radial-gradient(1px 1px at 20% 30%,#fff6,transparent),
     radial-gradient(1px 1px at 70% 60%,#fff5,transparent),
-    radial-gradient(1px 1px at 40% 80%,#fff6,transparent),
-    linear-gradient(160deg,var(--bg1),var(--bg2));
+    linear-gradient(160deg,#020617,#0b1020);
   color:var(--text);
-  min-height:100vh;
 }
-.app{
-  max-width:680px;
-  margin:auto;
-  padding:14px;
-}
+.app{max-width:680px;margin:auto;padding:14px}
 
-/* === BANNER === */
+/* === ADVANCED BANNER === */
 .banner{
   position:relative;
-  background:
-    radial-gradient(circle at left,#22d3ee55,transparent 60%),
-    radial-gradient(circle at right,#22c55e33,transparent 60%),
-    rgba(0,0,0,.55);
-  border:1px solid var(--line);
   border-radius:22px;
-  padding:22px 18px;
-  margin-bottom:14px;
+  padding:26px 18px;
+  background:
+    linear-gradient(120deg,#020617,#020617),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 18px,
+      rgba(56,189,248,.15) 20px
+    );
+  border:1px solid var(--line);
   overflow:hidden;
 }
-.banner::after{
+.banner::before{
   content:"";
   position:absolute;
-  left:0;right:0;bottom:0;
-  height:2px;
-  background:linear-gradient(90deg,transparent,#38bdf8,#22c55e,transparent);
-  box-shadow:0 0 18px #22d3ee;
+  inset:0;
+  background:
+    radial-gradient(circle at 20% 30%,#22d3ee44,transparent 40%),
+    radial-gradient(circle at 80% 70%,#22c55e33,transparent 40%);
+  animation:float 12s linear infinite;
 }
-.banner-title{
+@keyframes float{
+  from{transform:translateY(0)}
+  to{transform:translateY(-40px)}
+}
+.banner h1{
+  margin:0;
   font-size:22px;
   font-weight:700;
   background:linear-gradient(90deg,#7dd3fc,#22d3ee);
   -webkit-background-clip:text;
   color:transparent;
 }
-.banner-sub{
+.banner p{
+  margin:6px 0 0;
   font-size:12px;
-  color:#9ca3af;
-  margin-top:4px;
+  color:var(--muted);
 }
 
-/* HEADER */
-.header{
-  background:var(--glass);
-  backdrop-filter:blur(18px);
-  border:1px solid var(--line);
-  border-radius:22px;
-  padding:16px;
-}
+/* SEARCH */
 .search{
+  margin-top:14px;
   position:relative;
 }
 .search input{
   width:100%;
   padding:16px 16px 16px 46px;
   border-radius:16px;
+  background:#0007;
   border:1px solid var(--line);
-  background:rgba(0,0,0,.5);
-  box-shadow:inset 0 0 0 1px rgba(56,189,248,.4),
-             0 0 24px rgba(56,189,248,.18);
   color:#fff;
   font-size:16px;
+  box-shadow:0 0 24px #38bdf833;
 }
 .search::before{
   content:"🔍";
@@ -96,66 +91,52 @@ body{
   left:16px;
   top:50%;
   transform:translateY(-50%);
-  opacity:.7;
 }
 
 /* TABS */
 .tabs{
   display:flex;
-  gap:8px;
-  margin:14px 0 10px;
+  gap:6px;
+  margin:14px 0;
 }
 .tab{
   flex:1;
   text-align:center;
-  padding:10px 6px;
   font-size:12px;
+  padding:10px 6px;
   color:var(--muted);
   cursor:pointer;
-  position:relative;
 }
 .tab.active{
   color:var(--blue);
-}
-.tab.active::after{
-  content:"";
-  position:absolute;
-  left:25%;
-  right:25%;
-  bottom:-6px;
-  height:3px;
-  background:var(--blue);
-  border-radius:3px;
-  box-shadow:0 0 14px var(--blue);
+  border-bottom:3px solid var(--blue);
 }
 
 /* LIST */
 .list{
-  background:var(--glass);
-  backdrop-filter:blur(18px);
+  background:var(--panel);
   border:1px solid var(--line);
   border-radius:22px;
   padding:12px;
-  max-height:68vh;
+  max-height:65vh;
   overflow:auto;
 }
 
 /* CARD */
 .card{
   position:relative;
-  background:rgba(0,0,0,.38);
+  background:#0006;
   border:1px solid var(--line);
   border-radius:18px;
   padding:14px;
   margin-bottom:12px;
-  animation:fadeUp .25s ease;
 }
 .card.exact{
   background:
-    radial-gradient(120% 120% at top left,rgba(34,197,94,.35),transparent),
-    rgba(0,0,0,.55);
-  border:1px solid var(--ok);
-  box-shadow:0 0 40px rgba(34,197,94,.6);
+    radial-gradient(120% 120% at top left,#22c55e55,transparent),
+    #0009;
+  border-color:var(--green);
+  box-shadow:0 0 40px #22c55e99;
 }
 .code{
   font-size:18px;
@@ -163,7 +144,7 @@ body{
 }
 .card.exact .code{
   font-size:32px;
-  color:var(--ok);
+  color:var(--green);
 }
 .name{
   font-size:13px;
@@ -173,8 +154,6 @@ body{
   font-size:18px;
   color:#dcfce7;
 }
-
-/* BADGE */
 .badge{
   position:absolute;
   top:12px;
@@ -184,7 +163,6 @@ body{
   border-radius:999px;
   background:#2563eb33;
   color:#93c5fd;
-  font-weight:600;
 }
 
 /* FOOTER */
@@ -194,12 +172,6 @@ body{
   color:#6b7280;
   margin-top:14px;
 }
-
-/* ANIM */
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(8px)}
-  to{opacity:1;transform:none}
-}
 .hidden{display:none}
 </style>
 </head>
@@ -208,27 +180,24 @@ body{
 <div class="app">
 
 <div class="banner">
-  <div class="banner-title">Stok Kodu Yapay Zeka Asistanı</div>
-  <div class="banner-sub">Akıllı Stok Arama ve Eşleştirme</div>
+  <h1>Stok Kodu Yapay Zeka Asistanı</h1>
+  <p>Akıllı arama · Akıllı eşleştirme · ERP uyumlu</p>
 </div>
 
-<div class="header">
-  <div class="search">
-    <input id="search" placeholder="Stok kodu veya stok ismi yazınız...">
-  </div>
+<div class="search">
+  <input id="search" placeholder="Stok kodu veya stok ismi yazınız...">
 </div>
 
 <div class="tabs">
-  <div class="tab active" data-tab="HAMMADDE">HAMMADDE</div>
+  <div class="tab active" data-tab="ALL">TÜMÜ</div>
+  <div class="tab" data-tab="HAMMADDE">HAMMADDE</div>
   <div class="tab" data-tab="AMBALAJ">AMBALAJ</div>
   <div class="tab" data-tab="MAMUL">MAMÜL</div>
 </div>
 
 <div class="list" id="list"></div>
 
-<div class="footer">
-  © Copyright Bilal Tektaş
-</div>
+<div class="footer">© Copyright Bilal Tektaş</div>
 
 <textarea id="rawData" class="hidden">
 HAMMADDE	001040102	YAŞ BİBER KAPYA
@@ -3134,23 +3103,30 @@ YRDMALZM	15763861496	YARDIMCI MALZEME ÜRETİM  KAPAK 63 MM
 </div>
 
 <script>
+const PRIORITY={AMBALAJ:1,YRDMALZM:2,HAMMADDE:3,MAMUL:4};
+
 const raw=document.getElementById("rawData").value.trim();
-const STOCKS=raw.split("\n").map(l=>{
+let stocks=raw.split("\n").map(l=>{
   const p=l.split("\t");
   return{grup:p[0],code:p[1],name:p.slice(2).join(" ")};
 });
 
-const norm=s=>s.toLowerCase()
-  .normalize("NFD")
-  .replace(/[\u0300-\u036f]/g,"")
-  .replace(/ı/g,"i");
+/* DEDUP */
+const map={};
+stocks.forEach(s=>{
+  if(!map[s.code]||PRIORITY[s.grup]<PRIORITY[map[s.code].grup]){
+    map[s.code]=s;
+  }
+});
+stocks=Object.values(map);
+
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ı/g,"i");
 
 const input=document.getElementById("search");
 const list=document.getElementById("list");
 const tabs=document.querySelectorAll(".tab");
-
-let activeTab="HAMMADDE";
-let lastVibration=null;
+let activeTab="ALL";
+let lastVib=null;
 
 tabs.forEach(t=>{
   t.onclick=()=>{
@@ -3163,49 +3139,43 @@ tabs.forEach(t=>{
 
 function score(s,q){
   q=norm(q);
-  const c=norm(s.code), n=norm(s.name);
-  if(c===q) return 100;
-  if(n===q) return 95;
-  if(c.startsWith(q)) return 85;
-  if(n.startsWith(q)) return 75;
-  if(c.includes(q)||n.includes(q)) return 50;
+  if(norm(s.code)===q||norm(s.name)===q) return 100;
+  if(norm(s.code).startsWith(q)||norm(s.name).startsWith(q)) return 80;
+  if(norm(s.code).includes(q)||norm(s.name).includes(q)) return 50;
   return 0;
 }
 
-function vibrateOnce(code){
-  if(code===lastVibration) return;
-  lastVibration=code;
+function vibrate(code){
+  if(code===lastVib) return;
+  lastVib=code;
   navigator.vibrate?.([200,80,200,80,300]);
 }
 
 function render(){
   const q=input.value.trim();
   list.innerHTML="";
-  if(!q){lastVibration=null;return;}
+  if(!q){lastVib=null;return;}
 
-  const res=STOCKS
+  stocks
     .map(s=>({...s,score:score(s,q)}))
     .filter(s=>s.score>0)
     .filter(s=>{
-      if(activeTab==="HAMMADDE") return s.grup==="HAMMADDE";
-      if(activeTab==="MAMUL") return s.grup==="MAMUL";
+      if(activeTab==="ALL") return true;
       if(activeTab==="AMBALAJ") return s.grup==="AMBALAJ"||s.grup==="YRDMALZM";
+      return s.grup===activeTab;
     })
-    .sort((a,b)=>b.score-a.score);
-
-  res.forEach((s,i)=>{
-    const exact=s.score>=95;
-    const card=document.createElement("div");
-    card.className="card "+(exact?"exact":"");
-    card.innerHTML=`
-      <span class="badge">${s.grup}</span>
-      <div class="code">${s.code}</div>
-      <div class="name">${s.name}</div>
-    `;
-    list.appendChild(card);
-
-    if(i===0 && exact) vibrateOnce(s.code);
-  });
+    .sort((a,b)=>b.score-a.score)
+    .forEach((s,i)=>{
+      const exact=s.score>=95;
+      const c=document.createElement("div");
+      c.className="card"+(exact?" exact":"");
+      c.innerHTML=`
+        <span class="badge">${s.grup}</span>
+        <div class="code">${s.code}</div>
+        <div class="name">${s.name}</div>`;
+      list.appendChild(c);
+      if(i===0&&exact) vibrate(s.code);
+    });
 }
 
 input.addEventListener("input",render);
